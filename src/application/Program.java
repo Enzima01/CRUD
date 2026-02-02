@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import model.dao.DaoFactory;
 import model.dao.UserDao;
+import model.entities.User;
 
 public class Program {
 	public static void main(String[] args) {
@@ -22,10 +23,18 @@ public class Program {
 
 			System.out.print("> ");
 			option = sc.nextInt();
+			sc.nextLine();
 
 			switch (option) {
 			case 1:
 				System.out.println("\n=== REGISTER USER ===\n");
+				System.out.print("User name: ");
+				String name = sc.nextLine();
+				System.out.print("User email: ");
+				String email = sc.nextLine();
+				User user = new User(null, name, email);
+				userDao.insert(user);
+				System.out.println("\nInserted! New id = " + user.getId() + " | " + user.getName() + " | " + user.getEmail() + "\n");
 				break;
 			case 2:
 				System.out.println("\n=== EDIT USER ===\n");
