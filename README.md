@@ -21,7 +21,7 @@ Este CRUD representa uma **evolução significativa** em relação ao projeto **
 
 ## 🛠️ Tecnologias Utilizadas
 
-- Java
+- Java 8+
 - JDBC
 - MySQL
 - Eclipse IDE
