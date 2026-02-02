@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -16,7 +14,6 @@ import model.dao.UserDao;
 import model.entities.User;
 
 public class UserDaoJDBC implements UserDao {
-
 	private Connection conn;
 
 	public UserDaoJDBC(Connection conn) {
@@ -30,7 +27,6 @@ public class UserDaoJDBC implements UserDao {
 			st = conn.prepareStatement("INSERT INTO user(name, email) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
 			st.setString(1, u.getName());
 			st.setString(2, u.getEmail());
-
 			int rowsAffected = st.executeUpdate();
 			if (rowsAffected > 0) {
 				ResultSet rs = st.getGeneratedKeys();
@@ -47,7 +43,6 @@ public class UserDaoJDBC implements UserDao {
 		} finally {
 			DB.closeStatement(st);
 		}
-
 	}
 
 	@Override
@@ -59,7 +54,6 @@ public class UserDaoJDBC implements UserDao {
 			st.setString(2, u.getEmail());
 			st.setInt(3, u.getId());
 			st.executeUpdate();
-			System.out.println("User updated!");
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
@@ -81,7 +75,6 @@ public class UserDaoJDBC implements UserDao {
 			throw new DbException(e.getMessage());
 		} finally {
 			DB.closeStatement(st);
-
 		}
 	}
 
@@ -94,18 +87,15 @@ public class UserDaoJDBC implements UserDao {
 			st.setInt(1, id);
 			rs = st.executeQuery();
 			if (rs.next()) {
-				User user = instantiateUser(rs);
-				return user;
-			} else {
-				throw new DbException("User not found!");
+				return instantiateUser(rs);
 			}
+			return null;
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
-
 	}
 
 	@Override
@@ -116,14 +106,8 @@ public class UserDaoJDBC implements UserDao {
 			st = conn.prepareStatement("SELECT * FROM user");
 			rs = st.executeQuery();
 			List<User> list = new ArrayList<>();
-			Map<Integer, User> map = new HashMap<>();
 			while (rs.next()) {
-				User user = map.get(rs.getInt("id"));
-				if (user == null) {
-					user = instantiateUser(rs);
-					map.put(rs.getInt("id"), user);
-				}
-				list.add(user);
+				list.add(instantiateUser(rs));
 			}
 			return list;
 		} catch (SQLException e) {
@@ -141,5 +125,4 @@ public class UserDaoJDBC implements UserDao {
 		user.setEmail(rs.getString("email"));
 		return user;
 	}
-
 }
